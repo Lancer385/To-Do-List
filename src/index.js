@@ -1,9 +1,11 @@
 export {project_list};
-import { createProject } from "./projects";
-import { createTask } from "./task";
+import { projects } from "./projects";
 
-const project_list = {};
-createProject(project_list, "project1", "project-title");
-createTask(project_list["project1"], "task1", "task-title1", "description");
-createTask(project_list["project1"], "task2", "task-title2", "description");
-console.log(project_list)
+const project_list = [];
+window.project_list = project_list;
+window.createProject = createProject;
+
+function createProject(list, title){
+    let project = new projects(title);
+    list.push(project);
+}
