@@ -4,6 +4,11 @@ export class tasks{
         this.desc = desc;
         this.priority = priority;
     }
+    priorityCheck(taskList, index){
+        if (this.priority > taskList[index - 1].priority){
+            return true;
+        }
+    }
 }
 
 
