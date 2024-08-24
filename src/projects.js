@@ -14,7 +14,6 @@ export class projects {
         if (this.tasks.length  > 1) {
             while(true){
                 let taskIndex = this.tasks.indexOf(task);
-                if (taskIndex === 0) {break;}
                 if (task.priorityCheckLeft(this.tasks, taskIndex)){
                     this.moveLeft(taskIndex)
                 }
@@ -24,15 +23,19 @@ export class projects {
             }
         }
     }
-    // to make things more flexible, we can also add a methods to move tasks around
+    // to make things more flexible, we can also add methods to move tasks around
+    // We also need to ensure that we don't move the task out of bounds, 
+    // and not move it above a task with higher priority or vice-versa
     moveLeft(index){
-        const movedElement = this.tasks.splice(index,1);
-        this.tasks.splice(index - 1, 0, movedElement[0]);
+        if (this.tasks[index].priorityCheckLeft(this.tasks, index) || this.tasks[index].priority === this.tasks[index - 1].priority){
+            const movedElement = this.tasks.splice(index,1);
+            this.tasks.splice(index - 1, 0, movedElement[0]);
+        }
     };
     moveRight(index){
-        const movedElement = this.tasks.splice(index,1);
-        this.tasks.splice(index + 1, 0, movedElement[0]);
+        if (this.tasks[index].priorityCheckRight(this.tasks, index) || this.tasks[index].priority === this.tasks[index + 1].priority){
+            const movedElement = this.tasks.splice(index,1);
+            this.tasks.splice(index + 1, 0, movedElement[0]);
+        }
     };
 }
-
-
