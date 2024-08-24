@@ -1,8 +1,12 @@
+import { isToday, isBefore, isAfter } from "date-fns";
+import { today_list, upcoming_list } from ".";
+import { is } from "date-fns/locale";
 export class tasks{
-    constructor(title, desc, priority){
+    constructor(title, desc, priority, dueDate){
         this.title =  title;
         this.desc = desc;
         this.priority = priority;
+        this.dueDate = dueDate
     }
     priorityCheckLeft(taskList, index){
         if (index === 0){ return false}
@@ -16,6 +20,11 @@ export class tasks{
             return true;
         }
     }
+    dateCheck(){
+        if (isBefore(this.dueDate,  new Date())) { return false;};
+        if(isToday(this.dueDate)) {today_list.push(this);};
+        if (isAfter(this.dueDate, new Date())) {upcoming_list.push(this)};
+    };
 }
 
 

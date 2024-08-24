@@ -5,8 +5,12 @@ export class projects {
         this.title = title;
         this.tasks  = [];
     }
-    createTask(title, desc, priority){
-        let task = new tasks(title, desc, priority);
+    createTask(title, desc, priority, dueDate){
+        let task = new tasks(title, desc, priority, dueDate);
+        if (!this.dateCheck()){
+            console.log("Invalid date");
+            return;
+        }
         this.tasks.push(task);
         // if we would have a task with the highest priority, it should always stay at the top.
         // so basically, after we create a new task, we check for the priority, is it higher than task that
