@@ -1,7 +1,5 @@
 import {project_list, all_todos} from "./TodoStore";
 import { createProject } from "./TodoStore";
-import { projects } from "./projects";
-import { tasks } from "./tasks";
 import "./style.css";
 createProject(project_list, "project1")
 console.log(project_list);
@@ -16,15 +14,16 @@ document.body.appendChild(dialog);
 // Project DOM
 const projectFrom = document.createElement("form");
 const projectFromTitle = document.createElement("input");
-const projectSubmit = document.createElement("button")
+const projectSubmit = document.createElement("button");
 setAttributes(projectFrom, {
     id: "project-form",
     class: "From",
 });
 projectFromTitle.type = "text";
 projectSubmit.type = "submit";
+projectFromTitle.required = true;
 projectFrom.appendChild(projectFromTitle);
-projectFrom.appendChild(projectSubmit)
+projectFrom.appendChild(projectSubmit);
 
 
 
@@ -40,34 +39,40 @@ const priorities = {
     3: 'High',
     2: 'Moderate', 
     1: 'Low'
-}
+};
 for (const [value, text] of Object.entries(priorities)){
     const option = document.createElement("option");
     option.value = value;
     option.textContent = text;
     todoPriority.appendChild(option);
-}
+};
 todoDueDate.type = "date";
+todoSubmit.type = "submit";
+todoForm.required = true;
+todoTitle.required = true;
+todoDesc.required = true;
+todoPriority.required = true;
 todoForm.appendChild(todoTitle);
 todoForm.appendChild(todoDesc);
 todoForm.appendChild(todoPriority);
 todoForm.appendChild(todoDueDate);
 todoForm.appendChild(todoSubmit);
-todoSubmit.type = "submit";
+
 
 
 
 inbox.addEventListener("click", ()=> {
+    resetActiveButtons();
     displayAllTodo();
-})
+});
 
 projectFrom.addEventListener("submit", (e)=> {
     e.preventDefault();
     createProject(project_list, projectFromTitle.value)
-    displayProjects();
+    displayProjectDOM();
     projectFrom.reset();
     dialog.close();
-})
+});
 
 todoForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -76,23 +81,28 @@ todoForm.addEventListener("submit", (e) => {
     displayProjectTodos(projectIndex);
     todoForm.reset();
     dialog.close();
-})
+});
 
 
-displayProjects();
-function displayProjects(){
+
+
+
+
+
+function displayProjectDOM(){
     removeAllChildren(projectsNode)
     for (let i = 0; i< project_list.length; i++){
         let project = document.createElement("button");
         project.dataset.index = i;
+        project.classList = "projects"
         project.textContent = project_list[i].title;
         projectsNode.appendChild(project)
         project.addEventListener("click", (e) => {
-            document.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+            resetActiveButtons();
             e.target.classList.add('active')
             displayProjectTodos(parseInt(e.target.dataset.index));
-        })
-    }
+        });
+    };
     let addProject = document.createElement("button");
     addProject.textContent = "Add Project";
     addProject.id = "add-projects";
@@ -101,8 +111,8 @@ function displayProjects(){
         removeAllChildren(dialog);
         dialog.appendChild(projectFrom);
         dialog.showModal();
-    })
-}
+    });
+};
 
 function displayProjectTodos(index){
     removeAllChildren(content);
@@ -110,7 +120,7 @@ function displayProjectTodos(index){
         let todo = document.createElement("button");
         todo.textContent = project_list[index].tasks[i].title;
         content.appendChild(todo);
-    }
+    };
     let addTodo = document.createElement("button");
     addTodo.textContent = "Add Todo";
     addTodo.id = "add-todo";
@@ -119,18 +129,16 @@ function displayProjectTodos(index){
         removeAllChildren(dialog);
         dialog.appendChild(todoForm);
         dialog.showModal();
-    })
-}
-displayAllTodo();
+    });
+};
 function displayAllTodo(){
     removeAllChildren(content);
     for (let i = 0; i < all_todos.length; i++){
         let todo = document.createElement("button");
         todo.textContent = all_todos[i].title;
         content.appendChild(todo);
-    }
-}
-
+    };
+};
 
 
 
@@ -138,12 +146,18 @@ function displayAllTodo(){
 function removeAllChildren(node){
     while (node.firstChild){
         node.removeChild(node.lastChild);
-    }
-}
+    };
+};
 
+function resetActiveButtons(){
+    document.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+};
 
 function setAttributes(element, attributes) {
     for(let key in attributes) {
       element.setAttribute(key, attributes[key]);
-    }
-  }
+    };
+};
+
+displayProjectDOM()
+displayAllTodo();
