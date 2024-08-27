@@ -4,8 +4,6 @@ import { projects } from "./projects";
 import { tasks } from "./tasks";
 import "./style.css";
 createProject(project_list, "project1")
-project_list[0].createTask("task1", "desc4", 3, new Date())
-project_list[0].createTask("task2", "desc4", 3, new Date())
 console.log(project_list);
 const inbox = document.querySelector("#inbox");
 const content = document.querySelector("#content");
@@ -54,11 +52,8 @@ todoForm.appendChild(todoTitle);
 todoForm.appendChild(todoDesc);
 todoForm.appendChild(todoPriority);
 todoForm.appendChild(todoDueDate);
+todoForm.appendChild(todoSubmit);
 todoSubmit.type = "submit";
-
-
-
-
 
 
 
@@ -74,6 +69,15 @@ projectFrom.addEventListener("submit", (e)=> {
     dialog.close();
 })
 
+todoForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const projectIndex = document.querySelector(".active").dataset.index;
+    project_list[projectIndex].createTask(todoTitle.value, todoDesc.value, todoPriority.value, todoDueDate.value);
+    displayProjectTodos(projectIndex);
+    todoForm.reset();
+    dialog.close();
+})
+
 
 displayProjects();
 function displayProjects(){
@@ -83,8 +87,10 @@ function displayProjects(){
         project.dataset.index = i;
         project.textContent = project_list[i].title;
         projectsNode.appendChild(project)
-        project.addEventListener("click", () => {
-            displayProjectTodos(i);
+        project.addEventListener("click", (e) => {
+            document.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active')
+            displayProjectTodos(parseInt(e.target.dataset.index));
         })
     }
     let addProject = document.createElement("button");
@@ -105,13 +111,22 @@ function displayProjectTodos(index){
         todo.textContent = project_list[index].tasks[i].title;
         content.appendChild(todo);
     }
+    let addTodo = document.createElement("button");
+    addTodo.textContent = "Add Todo";
+    addTodo.id = "add-todo";
+    content.appendChild(addTodo)
+    addTodo.addEventListener("click",  ()=> {
+        removeAllChildren(dialog);
+        dialog.appendChild(todoForm);
+        dialog.showModal();
+    })
 }
 displayAllTodo();
 function displayAllTodo(){
     removeAllChildren(content);
-    for (let i = 0; i< all_todos.length; i++){
+    for (let i = 0; i < all_todos.length; i++){
         let todo = document.createElement("button");
-        todo.textContent = all_todos[0].title;
+        todo.textContent = all_todos[i].title;
         content.appendChild(todo);
     }
 }
