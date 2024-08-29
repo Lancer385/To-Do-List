@@ -1,5 +1,4 @@
-import { tasks} from "./tasks";
-import { all_todos } from "./TodoStore";
+import { tasks } from "./tasks";
 
 export class projects {
     constructor (title) {
@@ -9,7 +8,6 @@ export class projects {
     createTask(title, desc, priority, dueDate){
         let task = new tasks(title, desc, priority, dueDate);
         this.tasks.push(task);
-        all_todos.push(task);
         // if we would have a task with the highest priority, it should always stay at the top.
         // so basically, after we create a new task, we check for the priority, is it higher than task that
         // comes before it? move it. until that condition becomes false, it will keep moving until it reaches the top.
