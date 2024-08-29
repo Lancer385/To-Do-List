@@ -115,6 +115,10 @@ today.addEventListener("click", () => {
     displayTodayTodos();
 })
 
+week.addEventListener("click", () => {
+    resetActiveButtons();
+    displayWeekTodos();
+})
 projectFrom.addEventListener("submit", (e)=> {
     e.preventDefault();
     createProject(project_list, projectFromTitle.value)
@@ -192,6 +196,23 @@ function displayTodayTodos(){
         }
       
     };
+
+}
+
+function displayWeekTodos(){
+    removeAllChildren(content);
+    for (let i = 0; i < project_list.length; i++){
+        for (let j = 0; j < project_list[i].tasks.length; j++){
+            let targetDate = project_list[i].tasks[j].dueDate;
+            let weekInterval = {
+                start: format(new Date,  'yyyy-MM-dd'),
+                end : format(new Date,  'yyyy-MM-dd'),
+            }
+            if (isWithinInterval(targetDate,  weekInterval)){
+                addTodoContent(i, j);
+            }
+        }
+    }
 
 }
 
