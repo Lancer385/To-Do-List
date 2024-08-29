@@ -1,3 +1,4 @@
+import { constructFrom } from "date-fns/constructFrom";
 import {project_list, all_todos} from "./TodoStore";
 import { createProject } from "./TodoStore";
 import "./style.css";
@@ -7,7 +8,7 @@ const inbox = document.querySelector("#inbox");
 const content = document.querySelector("#content");
 const projectsNode = document.querySelector("#projects");
 
-// dialog for project and todo forms
+// dialog for project and todo forms and showing todo descriptions
 const dialog = document.createElement("dialog");
 document.body.appendChild(dialog);
 
@@ -114,11 +115,22 @@ function displayProjectDOM(){
     });
 };
 
-function displayProjectTodos(index){
+
+function displayProjectTodos(projectIndex){
     removeAllChildren(content);
-    for (let i = 0; i < project_list[index].tasks.length; i++){
-        let todo = document.createElement("button");
-        todo.textContent = project_list[index].tasks[i].title;
+    for (let i = 0; i < project_list[projectIndex].tasks.length; i++){
+        let todo = document.createElement("div");
+        let todoBtn = document.createElement("button");
+        todo.classList = "todos";
+        todo.textContent = project_list[projectIndex].tasks[i].title;
+        todoBtn.textContent = "content"
+        todoBtn.dataset.index = i;
+        todoBtn.addEventListener("click", () => {
+            removeAllChildren(dialog);
+            displayTodoInfo(projectIndex, i);
+            dialog.showModal();
+        } )
+        todo.appendChild(todoBtn)
         content.appendChild(todo);
     };
     let addTodo = document.createElement("button");
@@ -131,6 +143,8 @@ function displayProjectTodos(index){
         dialog.showModal();
     });
 };
+
+
 function displayAllTodo(){
     removeAllChildren(content);
     for (let i = 0; i < all_todos.length; i++){
@@ -141,7 +155,19 @@ function displayAllTodo(){
 };
 
 
-
+function displayTodoInfo(projectIndex, todoIndex){
+    const container = document.createElement("div")
+    const title = document.createElement("p")
+    const desc = document.createElement("p");
+    const date = document.createElement("p");
+    title.textContent = `Title: ${project_list[projectIndex].tasks[todoIndex].title}`;
+    desc.textContent =  `Description: ${project_list[projectIndex].tasks[todoIndex].desc}`;
+    date.textContent = `DueDate: ${project_list[projectIndex].tasks[todoIndex].dueDate}`;
+    container.appendChild(title);
+    container.appendChild(desc);
+    container.appendChild(date);
+    dialog.appendChild(container);
+}
 // helper functions
 function removeAllChildren(node){
     while (node.firstChild){
