@@ -1,4 +1,4 @@
-import {project_list} from "./TodoStore";
+import {project_list, removeProject} from "./TodoStore";
 import { format, isWithinInterval, startOfWeek, endOfWeek, isToday } from "date-fns";
 import { createProject } from "./TodoStore";
 import "./style.css";
@@ -119,6 +119,7 @@ week.addEventListener("click", () => {
     resetActiveButtons();
     displayWeekTodos();
 })
+
 projectFrom.addEventListener("submit", (e)=> {
     e.preventDefault();
     createProject(project_list, projectFromTitle.value)
@@ -152,15 +153,26 @@ todoCancelBtn.addEventListener("click",  (e)=> {
 function displayProjectDOM(){
     removeAllChildren(projectsNode)
     for (let i = 0; i< project_list.length; i++){
-        let project = document.createElement("button");
-        project.dataset.index = i;
+        let project = document.createElement("div");
+        let projectBtn = document.createElement("button");
+        let removeBtn = document.createElement("button");
+        projectBtn.dataset.index = i;
         project.classList = "projects"
-        project.textContent = project_list[i].title;
+        projectBtn.textContent = project_list[i].title;
+        projectBtn.classList = "view"
+        removeBtn.textContent = "Delete";
+        removeBtn.classList = "remove"
+        project.appendChild(projectBtn);
+        project.appendChild(removeBtn);
         projectsNode.appendChild(project)
-        project.addEventListener("click", (e) => {
+        projectBtn.addEventListener("click", (e) => {
             resetActiveButtons();
             e.target.classList.add('active')
             displayProjectTodos(parseInt(e.target.dataset.index));
+        });
+        removeBtn.addEventListener("click", (e) => {
+            resetActiveButtons();
+            removeProjectDOM(parseInt(i));
         });
     };
     let addProject = document.createElement("button");
@@ -174,17 +186,26 @@ function displayProjectDOM(){
     });
 };
 
-displayAllTodo()
+function removeProjectDOM(projectIndex){
+    removeProject(projectIndex);
+    removeAllChildren(projectsNode);
+    removeAllChildren(content);
+    displayProjectDOM();
+    displayAllTodo();
+}
+
+displayAllTodo();
 
 function displayAllTodo(){
     removeAllChildren(content);
     for (let i = 0; i < project_list.length; i++){
         for  (let j = 0; j < project_list[i].tasks.length; j++){
             addTodoContent(i, j);
-        }
-      
+        };
     };
-};
+    resetActiveButtons();
+    inbox.classList = "active"
+}
 
 function displayTodayTodos(){
     removeAllChildren(content);
@@ -192,12 +213,11 @@ function displayTodayTodos(){
         for  (let j = 0; j < project_list[i].tasks.length; j++){
             if( isToday(project_list[i].tasks[j].dueDate)){
                 addTodoContent(i, j);
-            }
-        }
-      
+            };
+        };
     };
-
-}
+    today.classList = "active"
+};
 
 function displayWeekTodos(){
     removeAllChildren(content);
@@ -207,14 +227,14 @@ function displayWeekTodos(){
             let weekInterval = {
                 start: format(new Date,  'yyyy-MM-dd'),
                 end : format(new Date,  'yyyy-MM-dd'),
-            }
+            };
             if (isWithinInterval(targetDate,  weekInterval)){
                 addTodoContent(i, j);
-            }
-        }
-    }
-
-}
+            };
+        };
+    };
+    week.classList = "active"
+};
 
 function displayProjectTodos(projectIndex){
     removeAllChildren(content);
@@ -233,7 +253,11 @@ function displayProjectTodos(projectIndex){
 };
 
 
-
+function removeProjectTodo(projectIndex, todoIndex){
+    project_list[projectIndex].removeTask(todoIndex);
+    let child = document.querySelector(`div[data-index="${todoIndex}"]`)
+    child.remove();
+}
 
 
 function displayTodoInfo(projectIndex, todoIndex){
@@ -255,6 +279,8 @@ function displayTodoInfo(projectIndex, todoIndex){
         dialog.close();
     });
 }
+
+
 // helper functions
 function removeAllChildren(node){
     while (node.firstChild){
@@ -275,16 +301,24 @@ function setAttributes(element, attributes) {
 function addTodoContent(projectIndex, todoIndex){
     let todo = document.createElement("div");
     let todoBtn = document.createElement("button");
+    let removeBtn = document.createElement("button");
     todo.classList = "todos";
     todo.textContent = project_list[projectIndex].tasks[todoIndex].title;
+    todo.dataset.index = todoIndex;
     todoBtn.textContent = "content"
     todoBtn.dataset.index = todoIndex;
+    removeBtn.classList = "remove";
+    removeBtn.textContent = "Delete";
     todoBtn.addEventListener("click", () => {
         removeAllChildren(dialog);
         displayTodoInfo(projectIndex, todoIndex);
         dialog.showModal();
     } )
-    todo.appendChild(todoBtn)
+    removeBtn.addEventListener("click", () => {
+        removeProjectTodo(projectIndex, todoIndex);
+    });
+    todo.appendChild(todoBtn);
+    todo.appendChild(removeBtn);
     content.appendChild(todo);
 }
 displayProjectDOM()

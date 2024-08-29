@@ -23,9 +23,13 @@ export class projects {
             }
         }
     }
+    removeTask(taskIndex){
+        this.tasks.splice(taskIndex,1)
+    }
     // to make things more flexible, we can also add methods to move tasks around
     // We also need to ensure that we don't move the task out of bounds, 
     // and not move it above a task with higher priority or vice-versa
+    // Note: This function is currently unused for the UI.
     moveLeft(index){
         if (this.tasks[index].priorityCheckLeft(this.tasks, index) || this.tasks[index].priority === this.tasks[index - 1].priority){
             const movedElement = this.tasks.splice(index,1);
