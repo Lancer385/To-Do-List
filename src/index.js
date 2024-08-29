@@ -1,11 +1,10 @@
-import {project_list, removeProject} from "./TodoStore";
-import { format, isWithinInterval, startOfWeek, endOfWeek, isToday } from "date-fns";
+import {project_list, removeProject, getLocalStorageItems} from "./TodoStore";
+import { format, isWithinInterval, isToday } from "date-fns";
 import { createProject } from "./TodoStore";
 import "./style.css";
-createProject(project_list, "project1")
-console.log(project_list);
 
-project_list[0].createTask("rg", "rhr", 2, format(new Date(), 'yyyy-MM-dd'))
+
+
 
 
 
@@ -16,7 +15,7 @@ const content = document.querySelector("#content");
 const projectsNode = document.querySelector("#projects");
 
 
-inbox.textContent = "Inbox";
+inbox.textContent = "All Todos";
 today.textContent = "Today";
 week.textContent = "Week";
 
@@ -47,8 +46,8 @@ projectCancelBtn.textContent = "Cancel";
 projectSubmit.type = "submit";
 projectFromTitle.required = true;
 projectFrom.appendChild(projectFromTitle);
-projectFrom.appendChild(projectCancelBtn);
 projectFrom.appendChild(projectSubmit);
+projectFrom.appendChild(projectCancelBtn);
 
 // todo DOM
 const todoForm = document.createElement("form");
@@ -136,7 +135,8 @@ projectCancelBtn.addEventListener("click",  (e)=> {
 todoForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const projectIndex = document.querySelector(".active").dataset.index;
-    project_list[projectIndex].createTask(todoTitle.value, todoDesc.value, todoPriority.value, todoDueDate.value);
+    project_list[projectIndex].createTask(todoTitle.value, todoDesc.value, parseInt(todoPriority.value), todoDueDate.value);
+    localStorage.setItem("project" + projectIndex, JSON.stringify(project_list[projectIndex]));
     displayProjectTodos(projectIndex);
     todoForm.reset();
     dialog.close();
@@ -194,7 +194,7 @@ function removeProjectDOM(projectIndex){
     displayAllTodo();
 }
 
-displayAllTodo();
+
 
 function displayAllTodo(){
     removeAllChildren(content);
@@ -253,7 +253,10 @@ function displayProjectTodos(projectIndex){
 };
 
 
-function removeProjectTodo(projectIndex, todoIndex){
+function removeProjectTodos(projectIndex, todoIndex){
+    let parsedProject = JSON.parse(localStorage.getItem("project" + projectIndex));
+    parsedProject.tasks.splice(todoIndex, 1);
+    localStorage.setItem("project" + projectIndex, JSON.stringify(parsedProject));
     project_list[projectIndex].removeTask(todoIndex);
     let child = document.querySelector(`div[data-index="${todoIndex}"]`)
     child.remove();
@@ -305,6 +308,17 @@ function addTodoContent(projectIndex, todoIndex){
     todo.classList = "todos";
     todo.textContent = project_list[projectIndex].tasks[todoIndex].title;
     todo.dataset.index = todoIndex;
+    switch (project_list[projectIndex].tasks[todoIndex].priority) {
+        case 1:
+            todo.classList.add("low");
+            break;
+        case 2:
+            todo.classList.add("moderate");
+            break;
+        case 3:
+            todo.classList.add("high");
+            break;
+    };
     todoBtn.textContent = "content"
     todoBtn.dataset.index = todoIndex;
     removeBtn.classList = "remove";
@@ -315,11 +329,12 @@ function addTodoContent(projectIndex, todoIndex){
         dialog.showModal();
     } )
     removeBtn.addEventListener("click", () => {
-        removeProjectTodo(projectIndex, todoIndex);
+        removeProjectTodos(projectIndex, todoIndex);
     });
     todo.appendChild(todoBtn);
     todo.appendChild(removeBtn);
     content.appendChild(todo);
 }
-displayProjectDOM()
+getLocalStorageItems();
+displayProjectDOM();
 displayAllTodo();

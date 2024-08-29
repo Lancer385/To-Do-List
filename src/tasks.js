@@ -1,4 +1,3 @@
-import { isBefore } from "date-fns";
 export class tasks{
     constructor(title, desc, priority, dueDate){
         this.title =  title;
@@ -19,9 +18,6 @@ export class tasks{
             return true;
         }
     }
-    dateCheck(){
-        if (isBefore(this.dueDate, new Date())) { return false;};
-    };
     toggleCheck(){
         this.stateCheck === true ?  this.stateCheck = false : this.stateCheck = true;
     }
