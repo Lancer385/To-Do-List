@@ -17,7 +17,7 @@ const projectsNode = document.querySelector("#projects");
 
 inbox.textContent = "All Todos";
 today.textContent = "Today";
-week.textContent = "Week";
+week.textContent = "This Week";
 
 
 
@@ -167,7 +167,7 @@ function displayAllTodo(){
     };
     sortTodos();
     resetActiveButtons();
-    inbox.classList = "active"
+    inbox.classList.add("active")
 }
 
 function displayTodayTodos(){
@@ -180,7 +180,7 @@ function displayTodayTodos(){
         };
     };
     sortTodos()
-    today.classList = "active"
+    today.classList.add("active")
 };
 
 function displayWeekTodos(){
@@ -198,7 +198,7 @@ function displayWeekTodos(){
         };
     };
     sortTodos()
-    week.classList = "active"
+    week.classList.add("active")
 };
 
 function displayProjectDOM(){
@@ -207,7 +207,7 @@ function displayProjectDOM(){
         let project = document.createElement("div");
         let projectBtn = document.createElement("button");
         let removeBtn = document.createElement("button");
-        projectBtn.dataset.index = i;
+        project.dataset.index = i;
         project.classList = "projects"
         projectBtn.textContent = project_list[i].title;
         projectBtn.classList = "view"
@@ -217,7 +217,7 @@ function displayProjectDOM(){
         project.appendChild(projectBtn);
         project.appendChild(removeBtn);
         projectsNode.appendChild(project)
-        projectBtn.addEventListener("click", (e) => {
+        project.addEventListener("click", (e) => {
             resetActiveButtons();
             e.target.classList.add('active')
             displayProjectTodos(parseInt(e.target.dataset.index));
@@ -242,7 +242,40 @@ function displayProjectDOM(){
 function displayProjectTodos(projectIndex){
     removeAllChildren(content);
     for (let i = 0; i < project_list[projectIndex].tasks.length; i++){
-        addTodoContent(projectIndex, i);
+        let todo = document.createElement("div");
+        let dueDate = document.createElement("div");
+        let todoBtn = document.createElement("button");
+        let removeBtn = document.createElement("button");
+        todo.classList = "todos";
+        dueDate.textContent = `DueDate : ${project_list[projectIndex].tasks[i].dueDate}`;
+        todo.dataset.index = i;
+        switch (project_list[projectIndex].tasks[i].priority) {
+            case 1:
+                todo.classList.add("1");
+                break;
+            case 2:
+                todo.classList.add("2");
+                break;
+            case 3:
+                todo.classList.add("3");
+                break;
+        };
+        todoBtn.textContent = project_list[projectIndex].tasks[i].title;
+        todoBtn.dataset.index = i;
+        removeBtn.classList = "remove";
+        removeBtn.textContent = "Delete";
+        todoBtn.addEventListener("click", () => {
+            removeAllChildren(dialog);
+            displayTodoInfo(projectIndex, i);
+            dialog.showModal();
+        } )
+        removeBtn.addEventListener("click", () => {
+            removeProjectTodos(projectIndex, i);
+        });
+        todo.appendChild(todoBtn);
+        todo.appendChild(dueDate);
+        todo.appendChild(removeBtn);
+        content.appendChild(todo);
     };
     let addTodo = document.createElement("button");
     addTodo.textContent = "Add Todo";
@@ -290,7 +323,6 @@ function addTodoContent(projectIndex, todoIndex){
     let todo = document.createElement("div");
     let dueDate = document.createElement("div");
     let todoBtn = document.createElement("button");
-    let removeBtn = document.createElement("button");
     todo.classList = "todos";
     dueDate.textContent = `DueDate : ${project_list[projectIndex].tasks[todoIndex].dueDate}`;
     todo.dataset.index = todoIndex;
@@ -307,21 +339,16 @@ function addTodoContent(projectIndex, todoIndex){
     };
     todoBtn.textContent = project_list[projectIndex].tasks[todoIndex].title;
     todoBtn.dataset.index = todoIndex;
-    removeBtn.classList = "remove";
-    removeBtn.textContent = "Delete";
     todoBtn.addEventListener("click", () => {
         removeAllChildren(dialog);
         displayTodoInfo(projectIndex, todoIndex);
         dialog.showModal();
     } )
-    removeBtn.addEventListener("click", () => {
-        removeProjectTodos(projectIndex, todoIndex);
-    });
     todo.appendChild(todoBtn);
     todo.appendChild(dueDate);
-    todo.appendChild(removeBtn);
     content.appendChild(todo);
 };
+
 
 // removal functions //
 
