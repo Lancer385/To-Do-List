@@ -32,7 +32,6 @@ button {
 .grouped, .projects{
     background-color: rgb(55, 206, 123);
     border: 1px solid green;
-    border-radius: 10px;
     height: 50px;
     
 }
@@ -59,6 +58,7 @@ button {
 
 .projects {
     display: flex;
+    height: 70px;
     justify-content: space-around;
     align-items: center;
 }
@@ -101,7 +101,7 @@ button {
 }
 
 .view.active {
-    background-color: rgb(171, 159, 159);
+    background-color: rgb(44, 107, 21);
 }
 
 .projects>div {
@@ -146,10 +146,10 @@ button {
 
 dialog > div, dialog > form {
     display: flex;
-    align-items: center;
     justify-content: center;
     flex-direction: column;
 }
+
 
 fieldset {
     display: flex;
@@ -157,7 +157,7 @@ fieldset {
     flex-direction: column;
 }
 
-.submit {
+.submit, #add-projects,  #add-todo {
     align-self: center;
     width: 100px;
     height: 35px;
@@ -166,7 +166,7 @@ fieldset {
     background-color: #2E8B57;
 }
 
-.cancel {
+.cancel, dialog > div > button{
     align-self: center;
     width: 100px;
     height: 35px;
@@ -174,3 +174,5 @@ fieldset {
     border-radius: 10px;
     background-color: rgb(203, 53, 53);
 }
+
+

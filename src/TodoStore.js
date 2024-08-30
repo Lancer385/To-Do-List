@@ -21,15 +21,13 @@ export function removeProject(projectIndex){
   
 };
 
-export function addTOLocalStorage(projects){
+function addTOLocalStorage(projects){
         localStorage.setItem("projects", JSON.stringify(projects));
 };
 
 export function getLocalStorageItems(){
         let parsedProjects = assignMethodsToObjects();
-        if (Array.isArray(parsedProjects)){
-            project_list.push(...parsedProjects);
-        };
+        project_list.push(...parsedProjects);
 }
 
 export function assignMethodsToObjects(){
