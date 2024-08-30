@@ -4,9 +4,6 @@ import { createProject } from "./TodoStore";
 import "./style.css";
 
 
-
-
-
 // getting the main html skeleton
 const inbox = document.querySelector("#inbox");
 const today = document.querySelector("#today");
@@ -41,6 +38,7 @@ projectFormTitleLabel.textContent = "Project Title:";
 const projectFormTitle = document.createElement("input");
 projectFormTitle.id = "projectFormTitle";
 projectFormTitle.name = "projectFormTitle";
+projectFormTitle.maxLength = "15"
 
 const projectSubmit = document.createElement("button");
 projectSubmit.type = "submit";
@@ -214,9 +212,6 @@ todoForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const projectIndex = document.querySelector(".active").dataset.index;
     project_list[projectIndex].createTask(todoTitle.value, todoDesc.value, parseInt(todoPriority.value), todoDueDate.value);
-    let parsedProject = assignMethodsToObjects();
-    parsedProject[projectIndex].createTask(todoTitle.value, todoDesc.value, parseInt(todoPriority.value), todoDueDate.value);
-    localStorage.setItem("projects", JSON.stringify(parsedProject));
     displayProjectTodos(projectIndex);
     todoForm.reset();
     dialog.close();
@@ -491,6 +486,24 @@ function sortTodos(){
 }
 
 // initial calls //
+
+createProject(project_list, 'Personal');
+createProject(project_list, 'Work');
+createProject(project_list, 'Hobbies');
+
+project_list[0].createTask('Buy groceries', 'Purchase groceries for the week', 2, format(new Date('2024-08-20'), 'yyyy-MM-dd'));
+project_list[0].createTask('Read a book', 'Finish reading the current book', 1, format(new Date('2024-08-22'), 'yyyy-MM-dd'));
+project_list[0].createTask('Go for a walk', 'Take a walk in the park', 3, format(new Date('2024-08-25'), 'yyyy-MM-dd'));
+
+project_list[1].createTask('Finish report', 'Complete the quarterly report', 1, format(new Date('2024-08-30'), 'yyyy-MM-dd'));
+project_list[1].createTask('Send emails', 'Send out the meeting reminders', 2, format(new Date('2024-08-27'), 'yyyy-MM-dd'));
+project_list[1].createTask('Prepare presentation', 'Prepare slides for the upcoming meeting', 1, format(new Date('2024-08-28'), 'yyyy-MM-dd'));
+
+project_list[2].createTask('Practice guitar', 'Practice guitar for an hour', 3, format(new Date('2024-08-21'), 'yyyy-MM-dd'));
+project_list[2].createTask('Watch a movie', 'Watch the latest movie release', 2, format(new Date('2024-08-23'), 'yyyy-MM-dd'));
+project_list[2].createTask('Try a new recipe', 'Cook a new recipe for dinner', 1, format(new Date('2024-08-24'), 'yyyy-MM-dd'));
+
+
 
 getLocalStorageItems();
 displayProjectDOM();
