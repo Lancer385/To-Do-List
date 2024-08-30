@@ -27,7 +27,9 @@ function addTOLocalStorage(projects){
 
 export function getLocalStorageItems(){
         let parsedProjects = assignMethodsToObjects();
-        project_list.push(...parsedProjects);
+        if (Array.isArray(parsedProjects)){
+            project_list.push(...parsedProjects);
+        }
 }
 
 export function assignMethodsToObjects(){
