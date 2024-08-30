@@ -429,12 +429,11 @@ function removeProjectDOM(projectIndex){
 }
 
 function removeProjectTodos(projectIndex, todoIndex){
-    let parsedProject = JSON.parse(localStorage.getItem("projects"));
-    parsedProject[projectIndex].tasks.splice(todoIndex, 1);
+    let parsedProject = assignMethodsToObjects();
+    parsedProject[projectIndex].removeTask(todoIndex);
     localStorage.setItem("projects", JSON.stringify(parsedProject));
     project_list[projectIndex].removeTask(todoIndex);
-    let child = document.querySelector(`div[data-index="${todoIndex}"]`)
-    child.remove();
+    displayProjectTodos(projectIndex);
 }
 
 
