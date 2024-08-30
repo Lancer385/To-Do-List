@@ -28,27 +28,38 @@ const dialog = document.createElement("dialog");
 document.body.appendChild(dialog);
 
 
-// Project DOM
-const projectFrom = document.createElement("form");
-const projectFromTitle = document.createElement("input");
-const projectSubmit = document.createElement("button");
-const projectCancelBtn = document.createElement("button");
+const projectForm = document.createElement("form");
 
-setAttributes(projectFrom, {
-    id: "project-form",
-    class: "From",
-});
-setAttributes(projectFromTitle, {
-    name: "title",
-    type: "text",
-});
-projectCancelBtn.textContent = "Cancel";
+const projectFieldset = document.createElement("fieldset");
+const projectLegend = document.createElement("legend");
+projectLegend.textContent = "Add New Project";
+projectFieldset.appendChild(projectLegend);
+
+const projectFormTitleLabel = document.createElement("label");
+projectFormTitleLabel.htmlFor = "projectFormTitle";
+projectFormTitleLabel.textContent = "Project Title:";
+const projectFormTitle = document.createElement("input");
+projectFormTitle.id = "projectFormTitle";
+projectFormTitle.name = "projectFormTitle";
+
+const projectSubmit = document.createElement("button");
 projectSubmit.type = "submit";
+projectSubmit.classList = "submit"
 projectSubmit.textContent = "Submit";
-projectFromTitle.required = true;
-projectFrom.appendChild(projectFromTitle);
-projectFrom.appendChild(projectSubmit);
-projectFrom.appendChild(projectCancelBtn);
+
+const projectCancelBtn = document.createElement("button");
+projectCancelBtn.type = "button";
+projectCancelBtn.classList = "cancel"
+projectCancelBtn.textContent = "Cancel";
+
+projectFieldset.appendChild(projectFormTitleLabel);
+projectFieldset.appendChild(projectFormTitle);
+projectFieldset.appendChild(projectSubmit);
+projectFieldset.appendChild(projectCancelBtn);
+
+projectForm.appendChild(projectFieldset);
+
+
 
 
 
@@ -180,11 +191,16 @@ week.addEventListener("click", () => {
     displayWeekTodos();
 })
 
-projectFrom.addEventListener("submit", (e)=> {
+projectForm.addEventListener("submit", (e)=> {
     e.preventDefault();
-    createProject(project_list, projectFromTitle.value)
+    createProject(project_list, projectFormTitle.value)
     displayProjectDOM();
-    projectFrom.reset();
+    let project = document.querySelector("#projects");
+    let lastChild =  project.lastChild.previousSibling;
+    let button = lastChild.querySelector(".view")
+    button.classList.add("active");
+    displayProjectTodos(button.dataset.index);
+    projectForm.reset();
     dialog.close();
 });
 
@@ -292,7 +308,7 @@ function displayProjectDOM(){
     projectsNode.appendChild(addProject)
     addProject.addEventListener("click",  ()=> {
         removeAllChildren(dialog);
-        dialog.appendChild(projectFrom);
+        dialog.appendChild(projectForm);
         dialog.showModal();
     });
 };
