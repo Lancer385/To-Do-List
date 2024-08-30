@@ -54,12 +54,24 @@ projectFrom.appendChild(projectCancelBtn);
 
 // todo DOM
 const todoForm = document.createElement("form");
+
+const fieldset = document.createElement("fieldset");
+const legend = document.createElement("legend");
+legend.textContent = "Add New To-Do";
+fieldset.appendChild(legend);
+
+const todoTitleLabel = document.createElement("label");
 const todoTitle = document.createElement("input");
+const todoDescLabel = document.createElement("label");
 const todoDesc = document.createElement("textarea");
+const todoPriorityLabel = document.createElement("label");
 const todoPriority = document.createElement("select");
+const todoDueDateLabel = document.createElement("label");
 const todoDueDate = document.createElement("input");
 const todoSubmit = document.createElement("button");
 const todoCancelBtn = document.createElement("button");
+
+
 
 const priorities = {
     3: 'High',
@@ -72,38 +84,82 @@ for (const [value, text] of Object.entries(priorities)){
     option.textContent = text;
     todoPriority.appendChild(option);
 };
+
 setAttributes(todoForm, {
     id: "todo-form",
     class: "From",
 });
+
+setAttributes(todoTitleLabel, {
+    for: "todoTitle",
+})
+
+setAttributes(todoTitle, {
+    name: "todoTitle",
+    type: "text",
+    maxLength: "15",
+    required: true,
+    placeholder: "e.g., do laundry"
+});
+
+setAttributes(todoDescLabel, {
+    for: "todoDesc",
+});
+
+setAttributes(todoDesc, {
+    id: "todoDesc",
+    name: "todoDesc",
+    required: true,
+    placeholder: "e.g., there's a lot of dirty clothes"
+});
+
+setAttributes(todoPriorityLabel, {
+    for: "todoPriority",
+});
+
+setAttributes(todoPriority, {
+    name: "todoPriority",
+    id: "todoPriority"
+});
+
+setAttributes(todoDueDateLabel, {
+    for: "todoDueDate",
+})
 setAttributes(todoDueDate, {
-    name: "date",
+    id: "todoDueDate",
+    name: "todoDueDate",
     type: "date",
     min: `${format(new Date(), 'yyyy-MM-dd')}`,
     value: `${format(new Date(), 'yyyy-MM-dd')}`
 });
-setAttributes(todoTitle, {
-    name: "title",
-    type: "text",
-    required: true,
-    placeholder: "Title: e.g., do laundry"
+
+setAttributes(todoSubmit, {
+    type: "submit",
+    class: "submit"
 });
-setAttributes(todoDesc, {
-    name: "desc",
-    required: true,
-    placeholder: "Description: e.g., there's a lot of dirty clothes"
-})
-todoSubmit.type = "submit";
+
+setAttributes(todoCancelBtn, {
+    type: "button",
+    class: "cancel"
+});
+todoTitleLabel.textContent = "Title:";
+todoDescLabel.textContent = "Description:";
+todoPriorityLabel.textContent = "Priority:";
+todoDueDateLabel.textContent = "Due Date:";
 todoSubmit.textContent = "Submit";
 todoCancelBtn.textContent = "Cancel";
-todoForm.required = true;   
-todoPriority.required = true;
-todoForm.appendChild(todoTitle);
-todoForm.appendChild(todoDesc);
-todoForm.appendChild(todoPriority);
-todoForm.appendChild(todoDueDate);
-todoForm.appendChild(todoSubmit);
-todoForm.appendChild(todoCancelBtn)
+fieldset.appendChild(todoTitleLabel);
+fieldset.appendChild(todoTitle);
+fieldset.appendChild(todoDescLabel);
+fieldset.appendChild(todoDesc);
+fieldset.appendChild(todoPriorityLabel);
+fieldset.appendChild(todoPriority);
+fieldset.appendChild(todoDueDateLabel);
+fieldset.appendChild(todoDueDate);
+fieldset.appendChild(todoSubmit);
+fieldset.appendChild(todoCancelBtn);
+
+todoForm.appendChild(fieldset);
 
 
 // event listeners //
@@ -205,19 +261,22 @@ function displayProjectDOM(){
     removeAllChildren(projectsNode)
     for (let i = 0; i< project_list.length; i++){
         let project = document.createElement("div");
+        let projectTitle = document.createElement("div")
         let projectBtn = document.createElement("button");
         let removeBtn = document.createElement("button");
-        project.dataset.index = i;
+        projectBtn.dataset.index = i;
         project.classList = "projects"
-        projectBtn.textContent = project_list[i].title;
+        projectTitle.textContent = project_list[i].title;
+        projectBtn.textContent = "View";
         projectBtn.classList = "view"
         removeBtn.textContent = "Delete";
         removeBtn.dataset.index = i;
         removeBtn.classList = "remove"
+        project.appendChild(projectTitle);
         project.appendChild(projectBtn);
         project.appendChild(removeBtn);
         projectsNode.appendChild(project)
-        project.addEventListener("click", (e) => {
+        projectBtn.addEventListener("click", (e) => {
             resetActiveButtons();
             e.target.classList.add('active')
             displayProjectTodos(parseInt(e.target.dataset.index));
@@ -244,6 +303,7 @@ function displayProjectTodos(projectIndex){
     for (let i = 0; i < project_list[projectIndex].tasks.length; i++){
         let todo = document.createElement("div");
         let dueDate = document.createElement("div");
+        let todoTitle = document.createElement("div")
         let todoBtn = document.createElement("button");
         let removeBtn = document.createElement("button");
         todo.classList = "todos";
@@ -260,7 +320,9 @@ function displayProjectTodos(projectIndex){
                 todo.classList.add("3");
                 break;
         };
-        todoBtn.textContent = project_list[projectIndex].tasks[i].title;
+        todoTitle.textContent = project_list[projectIndex].tasks[i].title;
+        todoBtn.classList.add("view");
+        todoBtn.textContent = "View";
         todoBtn.dataset.index = i;
         removeBtn.classList = "remove";
         removeBtn.textContent = "Delete";
@@ -272,6 +334,7 @@ function displayProjectTodos(projectIndex){
         removeBtn.addEventListener("click", () => {
             removeProjectTodos(projectIndex, i);
         });
+        todo.appendChild(todoTitle);
         todo.appendChild(todoBtn);
         todo.appendChild(dueDate);
         todo.appendChild(removeBtn);
@@ -321,6 +384,7 @@ function displayTodoInfo(projectIndex, todoIndex){
 // dynamically create the content of each todo
 function addTodoContent(projectIndex, todoIndex){
     let todo = document.createElement("div");
+    let todoTitle = document.createElement("div")
     let dueDate = document.createElement("div");
     let todoBtn = document.createElement("button");
     todo.classList = "todos";
@@ -337,13 +401,16 @@ function addTodoContent(projectIndex, todoIndex){
             todo.classList.add("3");
             break;
     };
-    todoBtn.textContent = project_list[projectIndex].tasks[todoIndex].title;
+    todoTitle.textContent = project_list[projectIndex].tasks[todoIndex].title;
+    todoBtn.classList.add("view");
+    todoBtn.textContent = "View";
     todoBtn.dataset.index = todoIndex;
     todoBtn.addEventListener("click", () => {
         removeAllChildren(dialog);
         displayTodoInfo(projectIndex, todoIndex);
         dialog.showModal();
     } )
+    todo.appendChild(todoTitle);
     todo.appendChild(todoBtn);
     todo.appendChild(dueDate);
     content.appendChild(todo);
@@ -412,3 +479,6 @@ function sortTodos(){
 getLocalStorageItems();
 displayProjectDOM();
 displayAllTodo();
+
+
+
