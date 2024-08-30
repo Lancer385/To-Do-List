@@ -198,6 +198,7 @@ projectForm.addEventListener("submit", (e)=> {
     let project = document.querySelector("#projects");
     let lastChild =  project.lastChild.previousSibling;
     let button = lastChild.querySelector(".view")
+    resetActiveButtons();
     button.classList.add("active");
     displayProjectTodos(button.dataset.index);
     projectForm.reset();
